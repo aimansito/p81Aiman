@@ -14,10 +14,10 @@ import java.sql.SQLException;
  */
 public class Conexion {
 
-    private static final String SERVIDOR = "jdbc:mysql://localhost/";
-    private static final String NOMBRE_BASE_DATOS = "prueba?zeroDateTimeBehavior=CONVERT_TO_NULL";
+    private static final String SERVIDOR = "jdbc:mysql://192.168.1.170:3306/";
+    private static final String NOMBRE_BASE_DATOS = "p81Aiman?zeroDateTimeBehavior=CONVERT_TO_NULL";
     private static final String USER = "aiman33";
-    private static final String PASS = "1234";
+    private static final String PASS = "Smrsor21#";
 
     private static Connection instancia = null;
 

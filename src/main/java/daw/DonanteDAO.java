@@ -38,10 +38,12 @@ public class DonanteDAO implements IDonante {
             while (res.next()) {
                 DonanteVO p = new DonanteVO();
                 // Recogemos los datos de la persona, guardamos en un objeto
-                p.setId_paciente(res.getInt("pk"));
+                p.setId_paciente(res.getInt("id_paciente"));
                 p.setNombre(res.getString("nombre"));
-                p.setFechaNacimiento(res.getDate("fecha_nac").toLocalDate());
-
+                p.setFechaNacimiento(res.getDate("fechaNacimiento").toLocalDate());
+                p.setGrupoSanguineo(res.getString("grupoSanguineo"));
+                p.setRh(res.getString("rh"));
+                p.setNumeroDonaciones(res.getInt("numeroDonaciones"));
                 //Añadimos el objeto a la lista
                 lista.add(p);
             }
@@ -56,7 +58,7 @@ public class DonanteDAO implements IDonante {
         ResultSet res = null;
         DonanteVO paciente = new DonanteVO();
 
-        String sql = "select * from persona where pk=?";
+        String sql = "select * from donantes where id_paciente=?";
 
         try (PreparedStatement prest = con.prepareStatement(sql)) {
             // Preparamos la sentencia parametrizada
@@ -69,9 +71,12 @@ public class DonanteDAO implements IDonante {
             // si existe esa pk
             if (res.next()) {
                 // Recogemos los datos de la persona, guardamos en un objeto
-                paciente.setId_paciente(res.getInt("pk"));
+                paciente.setId_paciente(res.getInt("id_paciente"));
                 paciente.setNombre(res.getString("nombre"));
-                paciente.setFechaNacimiento(res.getDate("fecha_nac").toLocalDate());
+                paciente.setFechaNacimiento(res.getDate("fechaNacimiento").toLocalDate());
+                paciente.setGrupoSanguineo("grupoSanguineo");
+                paciente.setRh("rh");
+                paciente.setNumeroDonaciones(res.getInt("numeroDonaciones"));
                 return paciente;
             }
 
@@ -83,7 +88,7 @@ public class DonanteDAO implements IDonante {
     public int insertPaciente(DonanteVO paciente) throws SQLException {
 
         int numFilas = 0;
-        String sql = "insert into persona values (?,?,?)";
+        String sql = "insert into donantes values (?,?,?,?,?,?)";
 
         if (findByPk(paciente.getId_paciente()) != null) {
             // Existe un registro con esa pk
@@ -92,14 +97,16 @@ public class DonanteDAO implements IDonante {
         } else {
             // Instanciamos el objeto PreparedStatement para inserción
             // de datos. Sentencia parametrizada
-            try (PreparedStatement prest = con.prepareStatement(sql)) {
+            try (PreparedStatement p = con.prepareStatement(sql)) {
 
                 // Establecemos los parámetros de la sentencia
-                prest.setInt(1, paciente.getId_paciente());
-                prest.setString(2, paciente.getNombre());
-                prest.setDate(3, Date.valueOf(paciente.getFechaNacimiento()));
-
-                numFilas = prest.executeUpdate();
+                p.setInt(1, paciente.getId_paciente());
+                p.setString(2, paciente.getNombre());
+                p.setDate(3, Date.valueOf(paciente.getFechaNacimiento()));
+                p.setString(4, paciente.getGrupoSanguineo());
+                p.setString(5, paciente.getRh());
+                p.setInt(6, paciente.getNumeroDonaciones());
+                numFilas = p.executeUpdate();
             }
             return numFilas;
         }
@@ -140,7 +147,7 @@ public class DonanteDAO implements IDonante {
     public int deletePaciente(DonanteVO paciente) throws SQLException {
         int numFilas = 0;
 
-        String sql = "delete from persona where pk = ?";
+        String sql = "delete from donantes where id_paciente = ?";
 
         // Sentencia parametrizada
         try (PreparedStatement prest = con.prepareStatement(sql)) {
@@ -154,10 +161,10 @@ public class DonanteDAO implements IDonante {
     }
 
     @Override
-    public int updatePaciente(int pk, DonanteVO nuevosDatos) throws SQLException {
+    public int updatePaciente(int pk, DonanteVO paciente) throws SQLException {
 
         int numFilas = 0;
-        String sql = "update donantes set nombre = ?, fecha_nac = ? where pk=?";
+        String sql = "update donantes set id_paciente = ?, nombre = ?, fechaNacimiento = ?, grupoSanguineo = ?, rh = ?, numeroDonaciones = ? where id_paciente = ?";
 
         if (findByPk(pk) == null) {
             // La persona a actualizar no existe
@@ -165,14 +172,18 @@ public class DonanteDAO implements IDonante {
         } else {
             // Instanciamos el objeto PreparedStatement para inserción
             // de datos. Sentencia parametrizada
-            try (PreparedStatement prest = con.prepareStatement(sql)) {
+            try (PreparedStatement p = con.prepareStatement(sql)) {
 
                 // Establecemos los parámetros de la sentencia
-                prest.setString(1, nuevosDatos.getNombre());
-                prest.setDate(2, Date.valueOf(nuevosDatos.getFechaNacimiento()));
-                prest.setInt(3, pk);
-
-                numFilas = prest.executeUpdate();
+                p.setInt(1, paciente.getId_paciente());
+                p.setString(2, paciente.getNombre());
+                p.setDate(3, Date.valueOf(paciente.getFechaNacimiento()));
+                p.setString(4, paciente.getGrupoSanguineo());
+                p.setString(5, paciente.getRh());
+                p.setInt(6, paciente.getNumeroDonaciones());
+                p.setInt(7, pk);
+                
+                numFilas = p.executeUpdate();
             }
             return numFilas;
         }

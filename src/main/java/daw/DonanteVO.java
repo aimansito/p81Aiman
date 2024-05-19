@@ -79,18 +79,15 @@ public class DonanteVO {
     public void setNumeroDonaciones(int numeroDonaciones) {
         this.numeroDonaciones = numeroDonaciones;
     }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Paciente{");
-        sb.append("id_paciente=").append(id_paciente);
-        sb.append(", nombre=").append(nombre);
-        sb.append(", fechaNacimiento=").append(fechaNacimiento);
-        sb.append(", grupoSanguineo=").append(grupoSanguineo);
-        sb.append(", rh=").append(rh);
-        sb.append(", numeroDonaciones=").append(numeroDonaciones);
-        sb.append('}');
+        sb.append(id_paciente).append(";");
+        sb.append(nombre).append(";");
+        sb.append(fechaNacimiento).append(";");
+        sb.append(grupoSanguineo).append(";");
+        sb.append(rh).append(";");
+        sb.append(numeroDonaciones).append(";");
         return sb.toString();
     }
 }
